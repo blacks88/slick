@@ -133,7 +133,9 @@
             _.respondTo = null;
             _.rowCount = 1;
             _.shouldClick = true;
-            _.$slider = $(element);
+            _.allChildrenSlider = $(element).children();
+            _.popoverSlider = $(element).children('.popoverSlick');
+            _.$slider =  $(element).children('.normalSlick');
             _.$slidesCache = null;
             _.transformType = null;
             _.transitionType = null;
@@ -562,7 +564,7 @@
             numOfSlides = Math.ceil(
                 originalSlides.length / slidesPerSection
             );
-
+         if(_.options.rows != 2){
             for(a = 0; a < numOfSlides; a++){
                 var slide = document.createElement('div');
                 for(b = 0; b < _.options.rows; b++) {
@@ -573,6 +575,8 @@
                             row.appendChild(originalSlides.get(target));
                         }
                     }
+
+
                     slide.appendChild(row);
                 }
                 newSlides.appendChild(slide);
@@ -584,7 +588,47 @@
                     'width':(100 / _.options.slidesPerRow) + '%',
                     'display': 'inline-block'
                 });
+            }else{
+                var count = 0;
+                console.log('2 rows');
+                for(a = 0; a < numOfSlides; a++){
 
+                     console.log('slide number  '+a);
+                var slide = document.createElement('div');
+                for(b = 0; b < _.options.rows; b++) {
+                    console.log('row number '+b);
+                    var row = document.createElement('div');
+                    for(c = 0; c < _.options.slidesPerRow; c++) {
+                        console.log('slide for row '+_.options.slidesPerRow);
+                        var target = (a * slidesPerSection + ((b * _.options.slidesPerRow) + c));
+                        console.log(target);
+                        console.log(originalSlides.get(target));
+                        if (originalSlides.get(target)) {
+                            row.appendChild(originalSlides.get(target));
+                        }
+                    }
+
+                    console.log('append row '+b);
+                    slide.appendChild(row);
+                    if(count == 0 && b==0){
+                        console.log('_.popoverSlider' +_.popoverSlider.get(0));
+                         slide.appendChild(_.popoverSlider.get(0));
+
+                    }
+
+                }
+
+                newSlides.appendChild(slide);
+                count++;
+            }
+
+            _.$slider.empty().append(newSlides);
+            _.$slider.children().children().children()
+                .css({
+                    'width':(100 / _.options.slidesPerRow) + '%',
+                    'display': 'inline-block'
+                });
+            }
         }
 
     };
@@ -1102,9 +1146,7 @@
             verticalOffset = 0;
         }
 
-        if (_.options.centerMode === true && _.slideCount <= _.options.slidesToShow) {
-            _.slideOffset = ((_.slideWidth * Math.floor(_.options.slidesToShow)) / 2) - ((_.slideWidth * _.slideCount) / 2);
-        } else if (_.options.centerMode === true && _.options.infinite === true) {
+        if (_.options.centerMode === true && _.options.infinite === true) {
             _.slideOffset += _.slideWidth * Math.floor(_.options.slidesToShow / 2) - _.slideWidth;
         } else if (_.options.centerMode === true) {
             _.slideOffset = 0;
@@ -1288,14 +1330,10 @@
         _.$slideTrack.attr('role', 'listbox');
 
         _.$slides.not(_.$slideTrack.find('.slick-cloned')).each(function(i) {
-            $(this).attr('role', 'option');
-            
-            //Evenly distribute aria-describedby tags through available dots.
-            var describedBySlideId = _.options.centerMode ? i : Math.floor(i / _.options.slidesToShow);
-            
-            if (_.options.dots === true) {
-                $(this).attr('aria-describedby', 'slick-slide' + _.instanceUid + describedBySlideId + '');
-            }
+            $(this).attr({
+                'role': 'option',
+                'aria-describedby': 'slick-slide' + _.instanceUid + i + ''
+            });
         });
 
         if (_.$dots !== null) {
