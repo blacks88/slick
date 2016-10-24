@@ -1659,6 +1659,12 @@
 
     };
 
+    Slick.prototype.togglePopoverDiv = Slick.prototype.slickTogglePopoverDiv = function() {
+        console.log('toggle popoverDiv');
+        $('.popoverSlick').toggle();
+
+    };
+
     Slick.prototype.prev = Slick.prototype.slickPrev = function() {
 
         var _ = this;
