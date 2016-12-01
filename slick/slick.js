@@ -1280,7 +1280,7 @@
 
     };
 
-    Slick.prototype.init = function(creation) {
+    Slick.prototype.init = Slick.prototype.slickInit = function(creation) {
 
         var _ = this;
 
@@ -1832,7 +1832,7 @@
 
     };
 
-    Slick.prototype.reinit = function() {
+    Slick.prototype.reinit = Slick.prototype.slickReInit  =  function() {
 
         var _ = this;
 
